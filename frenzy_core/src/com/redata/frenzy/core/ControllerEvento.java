@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ControllerEvento {
     public int insert(Evento e) throws SQLException{
-        String query = "{call insertarUsuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " //Datos del Evento
+        String query = "{call insertarEvento(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " //Datos del Evento
                 + "?)}"; //Datos de retorno
         
         int idEventoGenerado = -1;
@@ -64,8 +64,34 @@ public class ControllerEvento {
         return idEventoGenerado;
     }
     
-    public void update(Evento e){
+    public void update(Evento e) throws SQLException{
+        String query = "{call actualizarEvento(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " //Datos del Evento
+                + "?)}"; //Datos de retorno
         
+        
+        ConexionMySQL connMySQL = new ConexionMySQL();
+
+        Connection conn = connMySQL.open();
+
+        CallableStatement cstmt = conn.prepareCall(query);
+        
+        cstmt.setString(1, e.getNombre());
+        cstmt.setString(2, e.getUbicacion());
+        cstmt.setString(3, e.getFecha());
+        cstmt.setString(4, e.getHoraInicio());
+        cstmt.setString(5, e.getHoraTermino());
+        cstmt.setString(6, e.getMotivo());
+        cstmt.setString(7, e.getDescripcion());
+        cstmt.setDouble(8, e.getCosto());
+        cstmt.setString(9, e.getFotografia());
+        cstmt.setString(10, e.getPrivacidad());
+        
+        cstmt.setInt(11, e.getIdEvento());
+        
+        cstmt.executeUpdate();
+
+        cstmt.close();
+        connMySQL.close();
     }
     
     public List<Evento> getAll(String filtro) throws Exception {
