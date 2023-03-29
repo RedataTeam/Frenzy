@@ -78,8 +78,38 @@ public class ControllerUsuario {
         return idUsuarioGenerado;
     }
     
-    public void update(Usuario u){
+    public void update(Usuario u) throws SQLException{
+        String query = "{call actualizarUsuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " //Datos de ls persona
+                + "?, ?,"   //Datos del usuario
+                + "?, ?)}"; //Datos de retorno
         
+        
+        ConexionMySQL connMySQL = new ConexionMySQL();
+
+        Connection conn = connMySQL.open();
+
+        CallableStatement cstmt = conn.prepareCall(query);
+        
+        cstmt.setString(1, u.getPersona().getNombre());
+        cstmt.setString(2, u.getPersona().getPrimerApellido());
+        cstmt.setString(3, u.getPersona().getSegundoApellido());
+        cstmt.setString(4, u.getPersona().getFechaNacimiento());
+        cstmt.setString(5, u.getPersona().getIdentificacion());
+        cstmt.setString(6, u.getPersona().getTelMovil());
+        cstmt.setString(7, u.getPersona().getCorreo());
+        cstmt.setString(8, u.getPersona().getCiudad());
+        cstmt.setString(9, u.getPersona().getEstado());
+        cstmt.setString(10, u.getPersona().getFotografia());
+        cstmt.setString(11, u.getNombre());
+        cstmt.setString(12, u.getContrasenia());
+        
+        cstmt.setInt(13, u.getPersona().getIdPersona());
+        cstmt.setInt(14, u.getIdUsuario());
+        
+        cstmt.executeUpdate();
+
+        cstmt.close();
+        connMySQL.close();
     }
     
     public List<Usuario> getAll(String filtro) throws Exception {
