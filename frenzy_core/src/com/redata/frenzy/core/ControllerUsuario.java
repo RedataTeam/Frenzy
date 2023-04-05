@@ -144,6 +144,37 @@ public class ControllerUsuario {
         return usuarios;
     }
     
+    public Usuario login(String correo, String contra) throws Exception {
+      
+        String query = "SELECT * FROM v_usuario WHERE correo = '" + correo + "' and contrasenia = '" + contra + "'";
+
+        //Con este objeto nos vamos a conectar a la Base de Datos:
+        ConexionMySQL connMySQL = new ConexionMySQL();
+
+        //Abrimos la conexión con la Base de Datos:
+        Connection conn = connMySQL.open();
+
+        //Con este objeto ejecutaremos la consulta:
+        //Para ejecutar instrucciones SQL
+        PreparedStatement pstmt = conn.prepareStatement(query);
+
+        //Aquí guardaremos los resultados de la consulta:
+        ResultSet rs = pstmt.executeQuery();
+
+        Usuario u = fill(rs);
+        
+        if(u.getIdUsuario()==0){
+            u = null;
+        }
+
+        //Cerramos conexion
+        rs.close();
+        pstmt.close();
+        connMySQL.close();
+
+        return u;
+    }
+    
     private Usuario fill(ResultSet rs) throws Exception {
         Usuario u = new Usuario();
         Persona p = new Persona();
