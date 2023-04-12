@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ControllerEvento {
     public int insert(Evento e) throws SQLException{
-        String query = "{call insertarEvento(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " //Datos del Evento
+        String query = "{call insertarEvento(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " //Datos del Evento
                 + "?)}"; //Datos de retorno
         
         int idEventoGenerado = -1;
@@ -35,25 +35,28 @@ public class ControllerEvento {
         //en el orden en que los pide el procedimiento almacenado, 
         //comenzando en 1:
         //Establecemos los datos en el mismo orden que tenemos en la base de datos
-        cstmt.setString(1, e.getNombre());
-        cstmt.setString(2, e.getUbicacion());
-        cstmt.setString(3, e.getFecha());
-        cstmt.setString(4, e.getHoraInicio());
-        cstmt.setString(5, e.getHoraTermino());
-        cstmt.setString(6, e.getMotivo());
-        cstmt.setString(7, e.getDescripcion());
-        cstmt.setDouble(8, e.getCosto());
-        cstmt.setString(9, e.getFotografia());
-        cstmt.setString(10, e.getPrivacidad());
+        cstmt.setInt(1, e.getIdUsuario());
+        cstmt.setString(2, e.getNombre());
+        cstmt.setString(3, e.getUbicacion());
+        cstmt.setString(4, e.getFecha());
+        cstmt.setString(5, e.getHoraInicio());
+        cstmt.setString(6, e.getHoraTermino());
+        cstmt.setString(7, e.getMotivo());
+        cstmt.setString(8, e.getDescripcion());
+        cstmt.setDouble(9, e.getCosto());
+        cstmt.setString(10, e.getFotografia());
+        cstmt.setString(11, e.getPrivacidad());
+        cstmt.setString(12, e.getEtiquetas());
+        cstmt.setBoolean(13, e.isEstatus());
         
         //Registramos los parámetros de salida:
         //Types se importa de sql y se le define el tipo de datos de sql
-        cstmt.registerOutParameter(11, Types.INTEGER);
+        cstmt.registerOutParameter(14, Types.INTEGER);
         
         cstmt.executeUpdate();
 
         //Recuperamos los ID's generados:
-        idEventoGenerado = cstmt.getInt(11);
+        idEventoGenerado = cstmt.getInt(14);
 
         e.setIdEvento(idEventoGenerado);
                 
@@ -65,8 +68,7 @@ public class ControllerEvento {
     }
     
     public void update(Evento e) throws SQLException{
-        String query = "{call actualizarEvento(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " //Datos del Evento
-                + "?)}"; //Datos de retorno
+        String query = "{call actualizarEvento(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}"; //Datos del Evento
         
         
         ConexionMySQL connMySQL = new ConexionMySQL();
@@ -85,8 +87,9 @@ public class ControllerEvento {
         cstmt.setDouble(8, e.getCosto());
         cstmt.setString(9, e.getFotografia());
         cstmt.setString(10, e.getPrivacidad());
+        cstmt.setString(11, e.getEtiquetas());
+        cstmt.setBoolean(12, e.isEstatus());
         
-        cstmt.setInt(11, e.getIdEvento());
         
         cstmt.executeUpdate();
 
@@ -131,6 +134,7 @@ public class ControllerEvento {
 
         //Le establecemos a persona los valores
         e.setIdEvento(rs.getInt("idEvento"));
+        e.setIdUsuario(rs.getInt("idUsuario"));
         e.setNombre(rs.getString("nombre"));
         e.setUbicacion(rs.getString("ubicacion"));
         e.setFecha(rs.getString("fecha"));
@@ -141,6 +145,8 @@ public class ControllerEvento {
         e.setCosto(rs.getDouble("costo"));
         e.setFotografia(rs.getString("fotografia"));
         e.setPrivacidad(rs.getString("privacidad"));    
+        e.setEtiquetas(rs.getString("etiquetas"));
+        e.setEstatus(rs.getBoolean("estatus"));
 
         //Devolvemos Evento
         return e;

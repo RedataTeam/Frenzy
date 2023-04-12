@@ -46,10 +46,10 @@ public class RESTUsuario {
         return Response.status(Response.Status.OK).entity(out).build();
     }
 
-    @GET
+    @POST
     @Path("getAll")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll(@QueryParam("filtro") @DefaultValue("") String filtro) {
+    public Response getAll(@FormParam("filtro") @DefaultValue("") String filtro) {
         String out = null;
         ControllerUsuario cu = null;
         List<Usuario> clientes = null;
@@ -57,6 +57,25 @@ public class RESTUsuario {
             cu = new ControllerUsuario();
             clientes = cu.getAll(filtro);
             out = new Gson().toJson(clientes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            out = "{\"exception\":\"Error interno del servidor.\"}";
+        }
+        return Response.status(Response.Status.OK).entity(out).build();
+    }
+    
+    @POST
+    @Path("login")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response login(@FormParam("correo") @DefaultValue("") String correo,
+                          @FormParam("contra") @DefaultValue("") String contra){
+        String out = null;
+        ControllerUsuario cu = null;
+        Usuario usuario = null;
+        try {
+            cu = new ControllerUsuario();
+            usuario = cu.login(correo, contra);
+            out = new Gson().toJson(usuario);
         } catch (Exception e) {
             e.printStackTrace();
             out = "{\"exception\":\"Error interno del servidor.\"}";

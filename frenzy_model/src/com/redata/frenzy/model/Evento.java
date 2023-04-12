@@ -4,6 +4,7 @@ package com.redata.frenzy.model;
 
 public class Evento {
     int idEvento;
+    int idUsuario;
     String nombre;
     String ubicacion;
     String fecha;
@@ -14,12 +15,15 @@ public class Evento {
     double costo;
     String fotografia;
     String privacidad;
+    String etiquetas;
+    boolean estatus;
 
     public Evento() {
     }
 
-    public Evento(int idEvento, String nombre, String ubicacion, String fecha, String horaInicio, String horaTermino, String motivo, String descripcion, double costo, String fotografia, String privacidad) {
+    public Evento(int idEvento, int idUsuario, String nombre, String ubicacion, String fecha, String horaInicio, String horaTermino, String motivo, String descripcion, double costo, String fotografia, String privacidad, String etiquetas, boolean estatus) {
         this.idEvento = idEvento;
+        this.idUsuario = idUsuario;
         this.nombre = nombre;
         this.ubicacion = ubicacion;
         this.fecha = fecha;
@@ -30,6 +34,8 @@ public class Evento {
         this.costo = costo;
         this.fotografia = fotografia;
         this.privacidad = privacidad;
+        this.etiquetas = etiquetas;
+        this.estatus = estatus;
     }
 
     public int getIdEvento() {
@@ -38,6 +44,14 @@ public class Evento {
 
     public void setIdEvento(int idEvento) {
         this.idEvento = idEvento;
+    }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public String getNombre() {
@@ -119,6 +133,23 @@ public class Evento {
     public void setPrivacidad(String privacidad) {
         this.privacidad = privacidad;
     }
+
+    public String getEtiquetas() {
+        return etiquetas;
+    }
+
+    public void setEtiquetas(String etiquetas) {
+        this.etiquetas = etiquetas;
+    }
+
+    public boolean isEstatus() {
+        return estatus;
+    }
+
+    public void setEstatus(boolean estatus) {
+        this.estatus = estatus;
+    }
+
     
     
 }

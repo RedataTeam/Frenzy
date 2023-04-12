@@ -26,6 +26,7 @@ public class RESTEvento {
         Gson gson = new Gson();
         Evento evento = null;
         ControllerEvento cu = new ControllerEvento();
+        System.out.println(datosEvento);
 
         try {
             evento = gson.fromJson(datosEvento, Evento.class);
