@@ -97,10 +97,10 @@ public class ControllerEvento {
         connMySQL.close();
     }
     
-    public List<Evento> getAll(String filtro) throws Exception {
+    public List<Evento> getAll(String usuario, String etiqueta) throws Exception {
         //La consulta SQL a ejecutar:
-        String query = "SELECT * FROM v_evento WHERE nombre like '%"+filtro+"%'";
-
+        String query = "SELECT * FROM evento where idEvento not in (select idEvento from asistentes where idUsuario =" + usuario +") and estatus = 1 and etiquetas like '%"+etiqueta+"%'"; 
+        
         //Con este objeto nos vamos a conectar a la Base de Datos:
         ConexionMySQL connMySQL = new ConexionMySQL();
 
@@ -150,5 +150,29 @@ public class ControllerEvento {
 
         //Devolvemos Evento
         return e;
+    }
+    
+    public void asistir(String idEvento, String idUsuario) throws SQLException{
+        String query = "INSERT INTO asistentes VALUE("+idEvento+","+idUsuario+")"; 
+        
+        ConexionMySQL connMySQL = new ConexionMySQL();
+        Connection conn = connMySQL.open();
+        PreparedStatement pstmt = conn.prepareStatement(query);
+        pstmt.execute();
+
+        pstmt.close();
+        connMySQL.close();
+    }
+    
+    public void eliminarAsistencia(String idEvento, String idUsuario) throws SQLException{
+        String query = "DELETE FROM asistentes WHERE idEvento = "+idEvento+" AND idUsuario = "+idUsuario;
+        
+        ConexionMySQL connMySQL = new ConexionMySQL();
+        Connection conn = connMySQL.open();
+        PreparedStatement pstmt = conn.prepareStatement(query);
+        pstmt.execute();
+
+        pstmt.close();
+        connMySQL.close();
     }
 }

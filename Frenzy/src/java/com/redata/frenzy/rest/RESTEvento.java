@@ -14,6 +14,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.util.List;
 
 @Path("evento")
@@ -50,15 +51,49 @@ public class RESTEvento {
     @POST
     @Path("getAll")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll(@FormParam("filtro") @DefaultValue("") String filtro) {
+    public Response getAll(@FormParam("usuario") @DefaultValue("") String usuario, @FormParam("etiqueta") @DefaultValue("") String etiqueta) {
         String out = null;
         ControllerEvento ce = null;
         List<Evento> eventos = null;
         try {
             ce = new ControllerEvento();
-            eventos = ce.getAll(filtro);
+            eventos = ce.getAll(usuario, etiqueta);
             out = new Gson().toJson(eventos);
         } catch (Exception e) {
+            e.printStackTrace();
+            out = "{\"exception\":\"Error interno del servidor.\"}";
+        }
+        return Response.status(Response.Status.OK).entity(out).build();
+    }
+    
+    @POST
+    @Path("asistir")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response asistir(@FormParam ("idEvento") @DefaultValue("") String idEvento, @FormParam("idUsuario") @DefaultValue("") String idUsuario) throws SQLException{
+        String out = null;
+        ControllerEvento ce = null;
+        try{
+            ce = new ControllerEvento();
+            ce.asistir(idEvento, idUsuario);
+            out = "{\"correcto\":\"asistencia registrada correctamente.\"}";
+        } catch(Exception e){
+            e.printStackTrace();
+            out = "{\"exception\":\"Error interno del servidor.\"}";
+        }
+        return Response.status(Response.Status.OK).entity(out).build();
+    }
+    
+    @POST
+    @Path("eliminarAsistencia")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response eliminarAsistencia(@FormParam ("idEvento") @DefaultValue("") String idEvento, @FormParam("idUsuario") @DefaultValue("") String idUsuario) throws SQLException{
+        String out = null;
+        ControllerEvento ce = null;
+        try{
+            ce = new ControllerEvento();
+            ce.eliminarAsistencia(idEvento, idUsuario);
+            out = "{\"correcto\":\"asistencia eliminada correctamente.\"}";
+        } catch(Exception e){
             e.printStackTrace();
             out = "{\"exception\":\"Error interno del servidor.\"}";
         }
