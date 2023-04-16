@@ -99,4 +99,40 @@ public class RESTEvento {
         }
         return Response.status(Response.Status.OK).entity(out).build();
     }
+    
+    @POST
+    @Path("getEventosApuntado")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getEventosApuntado(@FormParam("usuario") @DefaultValue("") String usuario) {
+        String out = null;
+        ControllerEvento ce = null;
+        List<Evento> eventos = null;
+        try {
+            ce = new ControllerEvento();
+            eventos = ce.eventosApuntado(usuario);
+            out = new Gson().toJson(eventos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            out = "{\"exception\":\"Error interno del servidor.\"}";
+        }
+        return Response.status(Response.Status.OK).entity(out).build();
+    }
+    
+    @POST
+    @Path("getMisEventos")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMisEventos(@FormParam("usuario") @DefaultValue("") String usuario) {
+        String out = null;
+        ControllerEvento ce = null;
+        List<Evento> eventos = null;
+        try {
+            ce = new ControllerEvento();
+            eventos = ce.misEventos(usuario);
+            out = new Gson().toJson(eventos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            out = "{\"exception\":\"Error interno del servidor.\"}";
+        }
+        return Response.status(Response.Status.OK).entity(out).build();
+    }
 }

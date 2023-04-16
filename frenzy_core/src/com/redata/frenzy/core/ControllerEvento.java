@@ -99,7 +99,8 @@ public class ControllerEvento {
     
     public List<Evento> getAll(String usuario, String etiqueta) throws Exception {
         //La consulta SQL a ejecutar:
-        String query = "SELECT * FROM evento where idEvento not in (select idEvento from asistentes where idUsuario =" + usuario +") and estatus = 1 and etiquetas like '%"+etiqueta+"%'"; 
+        String query = "SELECT * FROM evento where idEvento not in (select idEvento from asistentes where idUsuario =" + usuario +
+                        ") and estatus = 1 and etiquetas like '%"+etiqueta+"%'" + " AND idUsuario != "+usuario; 
         
         //Con este objeto nos vamos a conectar a la Base de Datos:
         ConexionMySQL connMySQL = new ConexionMySQL();
@@ -174,5 +175,45 @@ public class ControllerEvento {
 
         pstmt.close();
         connMySQL.close();
+    }
+    
+    public List<Evento> eventosApuntado(String idUsuario) throws SQLException, Exception{
+        String query = "SELECT * FROM evento WHERE idEvento in (SELECT idEvento FROM asistentes WHERE idUsuario = "+idUsuario+")";
+        
+        ConexionMySQL connMySQL = new ConexionMySQL();
+        Connection conn = connMySQL.open();
+        PreparedStatement pstmt = conn.prepareStatement(query);
+        ResultSet rs = pstmt.executeQuery();
+        List<Evento> eventos = new ArrayList<>();
+
+        while (rs.next()) {
+            eventos.add(fill(rs));
+        }
+
+        rs.close();
+        pstmt.close();
+        connMySQL.close();
+
+        return eventos;
+    }
+    
+    public List<Evento> misEventos(String idUsuario) throws SQLException, Exception{
+        String query = "SELECT * FROM evento WHERE idUsuario = "+idUsuario;
+        
+        ConexionMySQL connMySQL = new ConexionMySQL();
+        Connection conn = connMySQL.open();
+        PreparedStatement pstmt = conn.prepareStatement(query);
+        ResultSet rs = pstmt.executeQuery();
+        List<Evento> eventos = new ArrayList<>();
+
+        while (rs.next()) {
+            eventos.add(fill(rs));
+        }
+
+        rs.close();
+        pstmt.close();
+        connMySQL.close();
+
+        return eventos;
     }
 }
