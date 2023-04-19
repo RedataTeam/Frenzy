@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.redata.frenzy.core.ControllerEvento;
 import com.redata.frenzy.model.Evento;
+import com.redata.frenzy.model.Usuario;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
@@ -60,6 +61,23 @@ public class RESTEvento {
             eventos = ce.getAll(usuario, etiqueta);
             out = new Gson().toJson(eventos);
         } catch (Exception e) {
+            e.printStackTrace();
+            out = "{\"exception\":\"Error interno del servidor.\"}";
+        }
+        return Response.status(Response.Status.OK).entity(out).build();
+    }
+    
+    @POST
+    @Path("eliminarEvento")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response eliminarEvento(@FormParam("idEvento") @DefaultValue("") String idEvento){
+        String out = null;
+        ControllerEvento ce = null;
+        try{
+            ce = new ControllerEvento();
+            ce.eliminarEvento(idEvento);
+            out = "{\"correcto\":\"Eliminacion correcta.\"}";
+        } catch(Exception e){
             e.printStackTrace();
             out = "{\"exception\":\"Error interno del servidor.\"}";
         }
@@ -129,6 +147,24 @@ public class RESTEvento {
             ce = new ControllerEvento();
             eventos = ce.misEventos(usuario);
             out = new Gson().toJson(eventos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            out = "{\"exception\":\"Error interno del servidor.\"}";
+        }
+        return Response.status(Response.Status.OK).entity(out).build();
+    }
+    
+    @POST
+    @Path("getAsistentes")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAsistentes(@FormParam("idEvento") @DefaultValue("") String idEvento){
+        String out = null;
+        ControllerEvento ce = null;
+        List<Usuario> usuarios = null;
+        try {
+            ce = new ControllerEvento();
+            usuarios = ce.getAsistentes(idEvento);
+            out = new Gson().toJson(usuarios);
         } catch (Exception e) {
             e.printStackTrace();
             out = "{\"exception\":\"Error interno del servidor.\"}";

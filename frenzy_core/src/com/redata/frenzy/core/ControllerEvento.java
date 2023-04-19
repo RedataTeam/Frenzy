@@ -3,6 +3,8 @@ package com.redata.frenzy.core;
 
 import com.redata.frenzy.db.ConexionMySQL;
 import com.redata.frenzy.model.Evento;
+import com.redata.frenzy.model.Persona;
+import com.redata.frenzy.model.Usuario;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -130,6 +132,18 @@ public class ControllerEvento {
         return eventos;
     }
     
+    public void eliminarEvento(String idEvento) throws SQLException{
+        String query = "UPDATE evento SET estatus = 0 WHERE idEvento = "+ idEvento;
+         
+        ConexionMySQL connMySQL = new ConexionMySQL();
+        Connection conn = connMySQL.open();
+        PreparedStatement pstmt = conn.prepareStatement(query);
+        pstmt.execute();
+
+        pstmt.close();
+        connMySQL.close();
+    }
+    
     private Evento fill(ResultSet rs) throws Exception {
         Evento e = new Evento();
 
@@ -215,5 +229,52 @@ public class ControllerEvento {
         connMySQL.close();
 
         return eventos;
+    }
+    
+    public List<Usuario> getAsistentes(String idEvento) throws SQLException, Exception{
+        String query = "SELECT * FROM v_usuario WHERE idUsuario IN (SELECT idUsuario FROM asistentes WHERE idEvento = "+idEvento+")";
+        
+        ConexionMySQL connMySQL = new ConexionMySQL();
+        Connection conn = connMySQL.open();
+        PreparedStatement pstmt = conn.prepareStatement(query);
+        ResultSet rs = pstmt.executeQuery();
+        List<Usuario> usuarios = new ArrayList<>();
+
+        while (rs.next()) {
+            usuarios.add(fillUsuario(rs));
+        }
+
+        rs.close();
+        pstmt.close();
+        connMySQL.close();
+
+        return usuarios;
+    }
+    
+    
+    private Usuario fillUsuario(ResultSet rs) throws Exception {
+        Usuario u = new Usuario();
+        Persona p = new Persona();
+
+        //Le establecemos a persona los valores
+        p.setIdPersona(rs.getInt("idPersona"));
+        p.setNombre(rs.getString("nombre"));
+        p.setPrimerApellido(rs.getString("primerApellido"));
+        p.setSegundoApellido(rs.getString("segundoApellido"));
+        p.setFechaNacimiento(rs.getString("fechaNacimiento"));
+        p.setIdentificacion(rs.getString("identificacion"));
+        p.setTelMovil(rs.getString("telMovil"));
+        p.setCorreo(rs.getString("correo"));
+        p.setCiudad(rs.getString("ciudad"));
+        p.setEstado(rs.getString("estado"));
+        p.setFotografia(rs.getString("fotografia"));    
+
+        u.setIdUsuario(rs.getInt("idUsuario"));
+        u.setNombre(rs.getString("nombreUsuario"));
+        u.setContrasenia(rs.getString("contrasenia"));
+        u.setPersona(p);
+
+        //Devolvemos cliente
+        return u;
     }
 }
